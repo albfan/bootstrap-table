@@ -353,6 +353,20 @@ The table options are defined in `jQuery.fn.bootstrapTable.defaults`.
 
 - **Example:** [Detail View](https://examples.bootstrap-table.com/#options/detail-view.html)
 
+## detailViewAlign
+
+- **Attribute:** `data-detail-view-align`
+
+- **Type:** `String`
+
+- **Detail:**
+
+  Indicate how to align the detail view icon. `'left'`, `'right'` can be used.
+
+- **Default:** `'left'`
+
+- **Example:** [Detail view Align](https://examples.bootstrap-table.com/#options/detail-view-align.html)
+
 ## detailViewByClick
 
 - **Attribute:** `data-detail-view-by-click`
@@ -579,6 +593,46 @@ The table options are defined in `jQuery.fn.bootstrapTable.defaults`.
 - **Default:** `{ return ['A', 'BUTTON'].includes(tagName) }`
 
 - **Example:** [Ignore Click To Select On](https://examples.bootstrap-table.com/#options/ignore-click-to-select-on.html)
+
+## loadingFontSize
+
+- **Attribute:** `data-loading-font-size`
+
+- **Type:** `String`
+
+- **Detail:**
+
+  To define the font size of the loading text, the default value is `'auto'`, it will be calculated automatically according to the table width, between 12px and 32px.
+
+- **Default:** `'auto'`
+
+- **Example:** [Loading Font Size](https://examples.bootstrap-table.com/#options/loading-font-size.html)
+
+## loadingTemplate
+
+- **Attribute:** `data-loading-template`
+
+- **Type:** `Function`
+
+- **Detail:**
+
+  To custom the loading type by yourself. The parameters object contain:
+
+  * loadingMessage: the `formatLoadingMessage` locale.
+
+- **Default:**
+  ```
+  function (loadingMessage) {
+    return '<span class="loading-wrap">' +
+      '<span class="loading-text">' +
+      loadingMessage +
+      '</span>' +
+      '<span class="animation-wrap"><span class="animation-dot"></span></span>' +
+      '</span>'
+  }
+  ```
+
+- **Example:** [Loading Template](https://examples.bootstrap-table.com/#options/loading-template.html)
 
 ## locale
 
@@ -915,7 +969,7 @@ The table options are defined in `jQuery.fn.bootstrapTable.defaults`.
   Before load remote data, handler the response data format, the parameters object contains:
 
   * `res`: the response data.
-  * `jqXHR`: jqXHR object, which is a superset of the XMLHTTPRequest object. For more information, see the [jqXHR Type](http://api.jquery.com/Types/#jqXHR).
+  * `jqXHR`: jqXHR object, which is a super set of the XMLHTTPRequest object. For more information, see the [jqXHR Type](http://api.jquery.com/Types/#jqXHR).
 
 - **Default:** `function(res) { return res }`
 
@@ -1612,4 +1666,3 @@ The table options are defined in `jQuery.fn.bootstrapTable.defaults`.
 - **Default:** `false`
 
 - **Example:** [visible search](https://examples.bootstrap-table.com/#options/visible-search.html)
-

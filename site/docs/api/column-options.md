@@ -245,7 +245,7 @@ The column options is defined in `jQuery.fn.bootstrapTable.columnDefaults`.
 
   The context (this) is the column Object.
 
-  The cell formatter function, take three parameters:
+  The cell formatter function, take four parameters:
 
   * `value`: the field value.
   * `row`: the row record data.
@@ -327,7 +327,7 @@ The column options is defined in `jQuery.fn.bootstrapTable.columnDefaults`.
 
 - **Default:** `true`
 
-- **Example:** [Search Formatter](https://examples.bootstrap-table.com/#column-options/format-search.html)
+- **Example:** [Search Formatter](https://examples.bootstrap-table.com/#column-options/search-formatter.html)
 
 ## searchable
 
@@ -504,4 +504,3 @@ The column options is defined in `jQuery.fn.bootstrapTable.columnDefaults`.
 - **Default:** `px`
 
 - **Example:** [Width Unit](https://examples.bootstrap-table.com/#column-options/width-unit.html)
-

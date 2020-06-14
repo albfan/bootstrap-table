@@ -81,6 +81,16 @@ The calling method syntax: `$('#table').bootstrapTable('method', parameter)`.
 
 - **Example:** [Expand/Collapse Row](https://examples.bootstrap-table.com/#methods/expand-collapse-row.html)
 
+## collapseRowByUniqueId
+
+- **Parameter:** `uniqueId`
+
+- **Detail:**
+
+  Collapse the row that has the `uniqueId` passed by parameter if the detail view option is set to `true`.
+
+- **Example:** [Expand/Collapse Row by uniqueId](https://examples.bootstrap-table.com/#methods/expand-collapse-row-by-uniqueid.html)
+
 ## destroy
 
 - **Parameter:** `undefined`
@@ -110,6 +120,16 @@ The calling method syntax: `$('#table').bootstrapTable('method', parameter)`.
   Expand the row that has the `index` passed by parameter if the detail view option is set to `true`.
 
 - **Example:** [Expand/Collapse Row](https://examples.bootstrap-table.com/#methods/expand-collapse-row.html)
+
+## expandRowByUniqueId
+
+- **Parameter:** `uniqueId`
+
+- **Detail:**
+
+  Expand the row that has the `uniqueId` passed by parameter if the detail view option is set to `true`.
+
+- **Example:** [Expand/Collapse Row by uniqueId](https://examples.bootstrap-table.com/#methods/expand-collapse-row-by-uniqueid.html)
 
 ## filterBy
 
@@ -168,6 +188,7 @@ The calling method syntax: `$('#table').bootstrapTable('method', parameter)`.
   * `useCurrentPage`: if set to true the method will return the data only in the current page.
   * `includeHiddenRows`: if set to true the method will include the hidden rows.
   * `unfiltered`: if set to true the method will include all data (unfiltered).
+  * `formatted`: get the formatted value from the defined [formatter](https://bootstrap-table.com/docs/api/column-options/#formatter).
 
 - **Example:** [Get Data](https://examples.bootstrap-table.com/#methods/getData.html)
 
@@ -381,8 +402,8 @@ The calling method syntax: `$('#table').bootstrapTable('method', parameter)`.
 
   Remove data from table, the params contain two properties:
 
-  * `field`: the field name of remove rows.
-  * `values`: the array of values for rows which should be removed.
+  * `field`: the field name of remove rows. If `$index` is not in your fields, you can use this special field `$index` to remove rows by row index.
+  * `values`: the array of values for rows which should be removed. If you use the special field `$index`, you can pass an array of indexes.
 
 - **Example:** [Remove](https://examples.bootstrap-table.com/#methods/remove.html)
 
@@ -577,7 +598,7 @@ The calling method syntax: `$('#table').bootstrapTable('method', parameter)`.
 
   Update the specified row(s), each params contain following properties:
 
-  * `id`: a row id where the id should be the uniqueid field assigned to the table.
+  * `id`: a row id where the id should be the `uniqueId` field assigned to the table.
   * `row`: the new row data.
   * `replace` (optional): set to `true` to replace the row instead of extending.
 
@@ -605,7 +626,7 @@ The calling method syntax: `$('#table').bootstrapTable('method', parameter)`.
 
 - **Detail:**
 
-  Update the cell specified by the id, each params contain following properties:
+  Update the specified cell(s), each params contain following properties:
 
   * `id`: row id where the id should be the `uniqueId` field assigned to the table.
   * `field`: field name of the cell to be updated.
@@ -648,4 +669,3 @@ The calling method syntax: `$('#table').bootstrapTable('method', parameter)`.
   * `replace` (optional): set to `true` to replace the row instead of extending.
 
 - **Example:** [Update Row](https://examples.bootstrap-table.com/#methods/update-row.html)
-

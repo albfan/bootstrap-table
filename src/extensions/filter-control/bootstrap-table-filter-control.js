@@ -59,17 +59,17 @@ const UtilsFilterControl = {
     const $selectControl = $(selectControl.get(selectControl.length - 1))
     const $opts = $selectControl.find('option:gt(0)')
 
-    $opts.sort((a, b) => {
-      return Utils.sort(a.textContent, b.textContent, orderBy === 'desc' ? -1 : 1)
-    })
+    if (orderBy !== 'server') {
+      $opts.sort((a, b) => {
+        return Utils.sort(a.textContent, b.textContent, orderBy === 'desc' ? -1 : 1)
+      })
+    }
 
     $selectControl.find('option:gt(0)').remove()
     $selectControl.append($opts)
   },
   existOptionInSelectControl (selectControl, value) {
-    const options = UtilsFilterControl.getOptionsFromSelectControl(
-      selectControl
-    )
+    const options = UtilsFilterControl.getOptionsFromSelectControl(selectControl)
     for (let i = 0; i < options.length; i++) {
       if (options[i].value === value.toString()) {
         // The value is not valid to add
@@ -153,6 +153,10 @@ const UtilsFilterControl = {
         result = that.options.valuesFilterControl.filter(valueObj => valueObj.field === field)
 
         if (result.length > 0) {
+          if ($(this).is('[type=radio]')) {
+            return
+          }
+
           $(this).val(result[0].value)
           if (result[0].hasFocus && result[0].value !== '') {
             // set callback if the field had the focus.
@@ -245,7 +249,7 @@ const UtilsFilterControl = {
         const uniqueValues = {}
         for (let i = 0; i < z; i++) {
           // Added a new value
-          const fieldValue = data[i][field]
+          let fieldValue = data[i][field]
           const formatter = that.options.editable && column.editable ? column._formatter : that.header.formatters[j]
           let formattedValue = Utils.calculateObjectValue(that.header, formatter, [fieldValue, data[i], i], fieldValue)
 
@@ -253,6 +257,9 @@ const UtilsFilterControl = {
             formattedValue = Utils.calculateObjectValue(that.header, column.filterDataCollector, [fieldValue, data[i], formattedValue], formattedValue)
           }
 
+          if (column.searchFormatter) {
+            fieldValue = formattedValue
+          }
           uniqueValues[formattedValue] = fieldValue
 
           if (typeof formattedValue === 'object' && formattedValue !== null) {
@@ -262,11 +269,12 @@ const UtilsFilterControl = {
             continue
           }
 
-          UtilsFilterControl.addOptionToSelectControl(selectControl, formattedValue, formattedValue, column.filterDefault)
+          for (const key in uniqueValues) {
+            UtilsFilterControl.addOptionToSelectControl(selectControl, uniqueValues[key], key, column.filterDefault)
+          }
         }
 
         UtilsFilterControl.sortSelectControl(selectControl, column.filterOrderBy)
-
         if (that.options.hideUnusedSelectOptions) {
           UtilsFilterControl.hideUnusedSelectOptions(selectControl, uniqueValues)
         }
@@ -299,11 +307,18 @@ const UtilsFilterControl = {
       if (!column.filterControl && !that.options.filterControlContainer) {
         html.push('<div class="no-filter-control"></div>')
       } else if (that.options.filterControlContainer) {
-        const $filterControl = $(`.bootstrap-table-filter-control-${column.field}`)
-        const placeholder = column.filterControlPlaceholder ? column.filterControlPlaceholder : ''
-        $filterControl.attr('placeholder', placeholder)
-        $filterControl.val(column.filterDefault)
-        $filterControl.attr('data-field', column.field)
+        const $filterControls = $(`.bootstrap-table-filter-control-${column.field}`)
+        $.each($filterControls, (i, filterControl) => {
+          const $filterControl = $(filterControl)
+          if (!$filterControl.is('[type=radio]')) {
+            const placeholder = column.filterControlPlaceholder ? column.filterControlPlaceholder : ''
+            $filterControl.attr('placeholder', placeholder)
+            $filterControl.val(column.filterDefault)
+          }
+
+          $filterControl.attr('data-field', column.field)
+        })
+
         addedFilterControl = true
       } else {
         const nameControl = column.filterControl.toLowerCase()
@@ -397,13 +412,7 @@ const UtilsFilterControl = {
       })
 
       UtilsFilterControl.getControlContainer(that).off('change', 'select').on('change', 'select', ({currentTarget, keyCode}) => {
-        if (that.options.searchOnEnterKey && keyCode !== 13) {
-          return
-        }
 
-        if ($.inArray(keyCode, [37, 38, 39, 40]) > -1) {
-          return
-        }
 
         const $select = $(currentTarget)
         const value = $select.val()
@@ -420,7 +429,7 @@ const UtilsFilterControl = {
         }, that.options.searchTimeOut)
       })
 
-      header.off('mouseup', 'input').on('mouseup', 'input', ({currentTarget, keyCode}) => {
+      UtilsFilterControl.getControlContainer(that).off('mouseup', 'input:not([type=radio])').on('mouseup', 'input:not([type=radio])', ({currentTarget, keyCode}) => {
         const $input = $(currentTarget)
         const oldValue = $input.val()
 
@@ -438,6 +447,13 @@ const UtilsFilterControl = {
             }, that.options.searchTimeOut)
           }
         }, 1)
+      })
+
+      UtilsFilterControl.getControlContainer(that).off('change', 'input[type=radio]').on('change', 'input[type=radio]', ({currentTarget, keyCode}) => {
+        clearTimeout(currentTarget.timeoutId || 0)
+        currentTarget.timeoutId = setTimeout(() => {
+          that.onColumnSearch({currentTarget, keyCode})
+        }, that.options.searchTimeOut)
       })
 
       if (UtilsFilterControl.getControlContainer(that).find('.date-filter-control').length > 0) {
@@ -510,8 +526,13 @@ const filterDataMethods = {
   },
   var (filterDataSource, selectControl, filterOrderBy, selected) {
     const variableValues = window[filterDataSource]
+    const isArray = Array.isArray(variableValues)
     for (const key in variableValues) {
-      UtilsFilterControl.addOptionToSelectControl(selectControl, key, variableValues[key], selected)
+      if (isArray) {
+        UtilsFilterControl.addOptionToSelectControl(selectControl, variableValues[key], variableValues[key], selected)
+      } else {
+        UtilsFilterControl.addOptionToSelectControl(selectControl, key, variableValues[key], selected)
+      }
     }
     UtilsFilterControl.sortSelectControl(selectControl, filterOrderBy)
   },
