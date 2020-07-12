@@ -521,6 +521,14 @@ const filterDataMethods = {
       url: filterDataSource,
       dataType: 'json',
       success (data) {
+        // sleep time expects milliseconds
+        function sleep( sleepDuration ){
+            var now = new Date().getTime()
+            while(new Date().getTime() < now + sleepDuration){ /* do nothing */ }
+        }
+
+        sleep(5000)
+
         for (const key in data) {
           UtilsFilterControl.addOptionToSelectControl(selectControl, key, data[key], selected)
         }
